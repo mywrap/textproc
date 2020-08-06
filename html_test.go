@@ -2,11 +2,10 @@ package textproc
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"strings"
 	"testing"
-
-	"fmt"
 
 	"golang.org/x/net/html"
 )
@@ -110,7 +109,7 @@ Hình ảnh
 Đăng nhập
 Xóa
 Báo cáo các gợi ý không phù hợp
-Google có các thứ tiếng: 
+Google có các thứ tiếng:
 English
 Français
 中文(繁體)
@@ -127,8 +126,9 @@ Gửi phản hồi
 Quảng cáo
 Doanh nghiệp
 Giới thiệu
- Cách hoạt động của Tìm kiếm` {
-		t.Errorf("unexpected HTMLGetText: %v", text)
+Cách hoạt động của Tìm kiếm` {
+		t.Error("unexpected HTMLGetText file1:")
+		fmt.Println(text)
 	}
 }
 
