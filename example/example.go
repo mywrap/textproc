@@ -1,5 +1,5 @@
 package main
 
 func main() {
-	// see `template/pkgname_test.go` for example
+	// see `text_test.go` and `html_test.go` for example
 }

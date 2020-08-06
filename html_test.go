@@ -1,6 +1,8 @@
 package textproc
 
 import (
+	"bytes"
+	"io/ioutil"
 	"strings"
 	"testing"
 
@@ -87,5 +89,43 @@ func TestHtmlUtils(t *testing.T) {
 	_, err = HTMLXPath(root, `//a[@class='c1'invalidExample`)
 	if err == nil {
 		t.Error("expect error invalid xpath")
+	}
+}
+
+func TestHTMLGetText(t *testing.T) {
+	file, err := ioutil.ReadFile("html_test_file.html")
+	if err != nil {
+		t.Fatal(err)
+	}
+	htmlTree, err := html.Parse(bytes.NewReader(file))
+	if err != nil {
+		t.Fatalf("error html Parse: %v", err)
+	}
+	text := HTMLGetText(htmlTree)
+	if text != `Google
+Gmail
+Hình ảnh
+Đăng nhập
+Xóa
+Báo cáo các gợi ý không phù hợp
+Google có các thứ tiếng: 
+English
+Français
+中文(繁體)
+Việt Nam
+Bảo mật
+Điều khoản
+Cài đặt
+Cài đặt tìm kiếm
+Tìm kiếm nâng cao
+Dữ liệu của bạn trong Tìm kiếm
+Hoạt động tìm kiếm
+Trợ giúp tìm kiếm
+Gửi phản hồi
+Quảng cáo
+Doanh nghiệp
+Giới thiệu
+ Cách hoạt động của Tìm kiếm` {
+		t.Errorf("unexpected HTMLGetText: %v", text)
 	}
 }

@@ -6,6 +6,14 @@ import (
 	"testing"
 )
 
+func TestTextInit(t *testing.T) {
+	//t.Logf("Numeric: %#v", Numeric)
+	//t.Logf("LowerAlpha: %v", LowerAlpha)
+	//t.Logf("UpperAlpha: %v", UpperAlpha)
+	//t.Logf("AlphaNumeric: %v", AlphaNumeric)
+	//t.Logf("AlphaNumericL: %v", AlphaNumericL)
+}
+
 func TestTextToNGrams(t *testing.T) {
 	text := `Có thánh này, chắc chắn "Sẻ đệ" (NDB 2.0) sẽ thêm sức mạnh để đả bại Sơ Luyến.
 Trực tiếp ngay bây giờ trên http://www.gametv1.vn. ______ Ahihi`
@@ -29,7 +37,7 @@ Trực tiếp ngay bây giờ trên http://www.gametv1.vn. ______ Ahihi`
 }
 
 func TestHashTextToInt64(t *testing.T) {
-	nWords := 100000
+	nWords := 1000000 // fast
 	words := make(map[string]bool)
 	hashes := make(map[int64]bool)
 	for i := 0; i < nWords; i++ {
@@ -38,7 +46,7 @@ func TestHashTextToInt64(t *testing.T) {
 		hashes[HashTextToInt(word)] = true
 		hashes[HashTextToInt(word)] = true
 	}
-	if math.Abs(float64(len(words)-len(hashes))) > 10 {
+	if math.Abs(float64(len(words)-len(hashes))) > 1 { // unique
 		t.Error()
 	}
 }
@@ -56,5 +64,44 @@ vi phạm hành chính trong lĩnh vực chứng khoán và thị trường ch�
 Tổng Công ty Tư vấn thiết kế dầu khí - CTCP (HNX:PVE). 
 Cụ thể, Công ty này đã không công bố thông tin tài liệu.` {
 		t.Error(out)
+	}
+}
+
+func TestRemoveRedundantSpace(t *testing.T) {
+	input := `
+Google
+Gmail
+Hình ảnh
+Đăng nhập		
+	
+Xóa
+
+
+Báo cáo các gợi ý không phù hợp
+Google có các thứ tiếng:  
+English
+    
+Français
+    
+中文（繁體）
+  
+Việt Nam
+Giới thiệu
+  Cách hoạt động của Tìm kiếm  `
+	e := `Google
+Gmail
+Hình ảnh
+Đăng nhập	
+Xóa
+Báo cáo các gợi ý không phù hợp
+Google có các thứ tiếng: 
+English
+Français
+中文（繁體）
+Việt Nam
+Giới thiệu
+ Cách hoạt động của Tìm kiếm`
+	if r := RemoveRedundantSpace(input); r != e {
+		t.Errorf("real: %v, expected: %v", r, e)
 	}
 }

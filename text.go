@@ -1,7 +1,6 @@
 package textproc
 
 import (
-	"fmt"
 	"hash/fnv"
 	"math/rand"
 	"sort"
@@ -11,47 +10,45 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
-// Lists of characters (rune) group by types
+// runes group by types, used for checking character type
 var (
-	NumericChars       = make(map[rune]bool)
-	LowerAlphaChars    = make(map[rune]bool)
-	UpperAlphaChars    = make(map[rune]bool)
-	AlphaNumericChars  = make(map[rune]bool)
-	AlphaNumericChars2 = make([]string, 0)
+	Numeric       = make(map[rune]bool)
+	LowerAlpha    = make(map[rune]bool)
+	UpperAlpha    = make(map[rune]bool)
+	AlphaNumeric  = make(map[rune]bool)
+	AlphaNumericL = make([]string, 0) // a list for choosing random a key in map
 )
 
-func runeToString(r rune) string {
-	return fmt.Sprintf("%c", r)
-}
-
+// just init above "constants"
 func init() {
+	numerics := "0123456789"
 	lowerAlphas := "aàáãạảăắằẳẵặâấầẩẫậbcdđeèéẹẻẽêếềểễệfghiìíĩỉịjklmn" +
 		"oòóõọỏôốồổỗộơớờởỡợpqrstuùúũụủưứừửữựvwxyýỳỵỷỹz"
+	for _, char := range []rune(numerics) {
+		Numeric[char] = true
+		AlphaNumeric[char] = true
+		AlphaNumericL = append(AlphaNumericL, string(char))
+	}
 	for _, char := range []rune(lowerAlphas) {
 		upper := unicode.ToUpper(char)
-		LowerAlphaChars[char], UpperAlphaChars[upper] = true, true
-		AlphaNumericChars[char], AlphaNumericChars[upper] = true, true
-		AlphaNumericChars2 = append(AlphaNumericChars2,
-			runeToString(char), runeToString(upper))
+		LowerAlpha[char], UpperAlpha[upper] = true, true
+		AlphaNumeric[char], AlphaNumeric[upper] = true, true
+		AlphaNumericL = append(AlphaNumericL, string(char))
+		AlphaNumericL = append(AlphaNumericL, string(upper))
 	}
-	numerics := "0123456789"
-	for _, char := range []rune(numerics) {
-		NumericChars[char] = true
-		AlphaNumericChars[char] = true
-		AlphaNumericChars2 = append(AlphaNumericChars2, runeToString(char))
-	}
-	sort.Strings(AlphaNumericChars2)
+	sort.Strings(AlphaNumericL)
 }
 
-// TODO: RemoveRedundantSpace performance
+// RemoveRedundantSpace replaces continuous spaces with one space
 func RemoveRedundantSpace(text string) string {
-	// newline is special case, must the last filter
+	// newline is special case, must be the last filter
 	spaces := []rune{'\t', '\v', '\f', '\r', ' ', 0x85, 0xA0, '\n'}
 	for _, space := range spaces {
-		spaceStr := fmt.Sprintf("%c", space)
-		tokens := strings.Split(text, spaceStr)
+		tokens := strings.Split(text, string(space))
 		realTokens := make([]string, 0)
 		for _, token := range tokens {
+			// a line with all chars are in spaces will be removed from result,
+			// except \n will be kept.
 			isSpaceLine := true
 			if token == "\n" {
 				isSpaceLine = false
@@ -63,12 +60,11 @@ func RemoveRedundantSpace(text string) string {
 					}
 				}
 			}
-
 			if !isSpaceLine {
 				realTokens = append(realTokens, token)
 			}
 		}
-		text = strings.Join(realTokens, spaceStr)
+		text = strings.Join(realTokens, string(space))
 	}
 	return text
 }
@@ -91,7 +87,7 @@ func GenRandomWord(minLen int, maxLen int) string {
 	wordLen := minLen + rand.Intn(maxLen+1-minLen)
 	chars := make([]string, wordLen)
 	for i, _ := range chars {
-		chars[i] = AlphaNumericChars2[rand.Intn(len(AlphaNumericChars2))]
+		chars[i] = AlphaNumericL[rand.Intn(len(AlphaNumericL))]
 	}
 	word := strings.Join(chars, "")
 	return word
@@ -111,13 +107,13 @@ func TextToWords(text string) []string {
 		firstAlphaNumeric := -1
 		lastAlphaNumeric := len(runes)
 		for i, r := range runes {
-			if AlphaNumericChars[r] {
+			if AlphaNumeric[r] {
 				firstAlphaNumeric = i
 				break
 			}
 		}
 		for i := len(runes) - 1; i >= 0; i-- {
-			if AlphaNumericChars[runes[i]] {
+			if AlphaNumeric[runes[i]] {
 				lastAlphaNumeric = i
 				break
 			}

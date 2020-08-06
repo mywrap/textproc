@@ -40,3 +40,13 @@ func BenchmarkTextToNGrams(b *testing.B) {
 		}
 	}
 }
+
+func BenchmarkRemoveRedundantSpace(b *testing.B) {
+	// TODO
+}
+
+func BenchmarkGenRandomWord(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		GenRandomWord(8, 12)
+	}
+}
