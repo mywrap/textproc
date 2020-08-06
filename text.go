@@ -3,7 +3,6 @@ package textproc
 import (
 	"hash/fnv"
 	"math/rand"
-	"sort"
 	"strings"
 	"unicode"
 
@@ -16,7 +15,7 @@ var (
 	LowerAlpha    = make(map[rune]bool)
 	UpperAlpha    = make(map[rune]bool)
 	AlphaNumeric  = make(map[rune]bool)
-	AlphaNumericL = make([]string, 0) // a list for choosing random a key in map
+	AlphaNumericL = make([]rune, 0) // a list for choosing random a key in map
 )
 
 // just init above "constants"
@@ -27,16 +26,15 @@ func init() {
 	for _, char := range []rune(numerics) {
 		Numeric[char] = true
 		AlphaNumeric[char] = true
-		AlphaNumericL = append(AlphaNumericL, string(char))
+		AlphaNumericL = append(AlphaNumericL, char)
 	}
 	for _, char := range []rune(lowerAlphas) {
 		upper := unicode.ToUpper(char)
 		LowerAlpha[char], UpperAlpha[upper] = true, true
 		AlphaNumeric[char], AlphaNumeric[upper] = true, true
-		AlphaNumericL = append(AlphaNumericL, string(char))
-		AlphaNumericL = append(AlphaNumericL, string(upper))
+		AlphaNumericL = append(AlphaNumericL, char)
+		AlphaNumericL = append(AlphaNumericL, upper)
 	}
-	sort.Strings(AlphaNumericL)
 }
 
 // RemoveRedundantSpace replaces continuous spaces with one space
@@ -76,7 +74,7 @@ func HashTextToInt(word string) int64 {
 	return int64(h.Sum64())
 }
 
-//
+// GenRandomWord uses Vietnamese characters
 func GenRandomWord(minLen int, maxLen int) string {
 	if minLen <= 0 {
 		minLen = 0
@@ -85,12 +83,12 @@ func GenRandomWord(minLen int, maxLen int) string {
 		maxLen = minLen
 	}
 	wordLen := minLen + rand.Intn(maxLen+1-minLen)
-	chars := make([]string, wordLen)
-	for i, _ := range chars {
-		chars[i] = AlphaNumericL[rand.Intn(len(AlphaNumericL))]
+	builder := strings.Builder{}
+	builder.Grow(3 * wordLen) // UTF8
+	for i := 0; i < wordLen; i++ {
+		builder.WriteRune(AlphaNumericL[rand.Intn(len(AlphaNumericL))])
 	}
-	word := strings.Join(chars, "")
-	return word
+	return builder.String()
 }
 
 func checkIsSeparator(r rune) bool {

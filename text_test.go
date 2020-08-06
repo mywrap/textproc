@@ -105,3 +105,11 @@ Giới thiệu
 		t.Errorf("real: %v, expected: %v", r, e)
 	}
 }
+
+func TestGenRandomWord(t *testing.T) {
+	for i := 0; i < 10; i++ {
+		word := GenRandomWord(8, 12)
+		t.Logf("len: %2d, lenBytes: %2d, word: %v",
+			len([]rune(word)), len([]byte(word)), word)
+	}
+}
