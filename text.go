@@ -39,35 +39,31 @@ func init() {
 
 // RemoveRedundantSpace replaces continuous spaces with one space
 func RemoveRedundantSpace(text string) string {
-	// newline is special case, must be the last filter
-	spaces := []rune{'\t', '\v', '\f', '\r', ' ', 0x85, 0xA0, '\n'}
-	for _, space := range spaces {
-		tokens := strings.Split(text, string(space))
-		realTokens := make([]string, 0)
-		for _, token := range tokens {
-			// a line with all chars are in spaces will be removed from result,
-			// except \n will be kept.
-			isSpaceLine := true
-			if token == "\n" {
-				isSpaceLine = false
-			} else {
-				for _, char := range []rune(token) {
-					if !unicode.IsSpace(char) {
-						isSpaceLine = false
-						break
-					}
-				}
-			}
-			if !isSpaceLine {
-				if space == '\n' {
-					token = strings.TrimSpace(token)
-				}
-				realTokens = append(realTokens, token)
+	tokens := strings.FieldsFunc(text, checkIsSpace)
+	text = strings.Join(tokens, " ")
+	lines := strings.Split(text, "\n")
+	builder := strings.Builder{}
+	builder.Grow(len(text))
+	for i, line := range lines {
+		tmp := strings.TrimSpace(line)
+		if tmp != "" {
+			builder.WriteString(tmp)
+			if i != len(lines) -1 {
+				builder.WriteString("\n")
 			}
 		}
-		text = strings.Join(realTokens, string(space))
 	}
-	return text
+	return builder.String()
+}
+
+// checkIsSpace returns false for newline
+func checkIsSpace(char rune) bool {
+	switch char {
+	case '\t', '\v', '\f', '\r', ' ', 0x85, 0xA0:
+		return true
+	default:
+		return false
+	}
 }
 
 // HashTextToInt is a unique and fast hash func
