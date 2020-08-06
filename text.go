@@ -48,7 +48,7 @@ func RemoveRedundantSpace(text string) string {
 		tmp := strings.TrimSpace(line)
 		if tmp != "" {
 			builder.WriteString(tmp)
-			if i != len(lines) -1 {
+			if i != len(lines)-1 {
 				builder.WriteString("\n")
 			}
 		}
@@ -60,6 +60,16 @@ func RemoveRedundantSpace(text string) string {
 func checkIsSpace(char rune) bool {
 	switch char {
 	case '\t', '\v', '\f', '\r', ' ', 0x85, 0xA0:
+		return true
+	default:
+		return false
+	}
+}
+
+// checkIsSpaceNL returns true for newline
+func checkIsSpaceNL(char rune) bool {
+	switch char {
+	case '\t', '\v', '\f', '\r', ' ', 0x85, 0xA0, '\n':
 		return true
 	default:
 		return false
@@ -90,38 +100,33 @@ func GenRandomWord(minLen int, maxLen int) string {
 	return builder.String()
 }
 
-func checkIsSeparator(r rune) bool {
-	// u00a0 is non-breaking space character that is usually seen in HTML
-	return r == ' ' || r == '\n' || r == '\t' || r == '\u00a0'
-}
-
 // TextToWords splits a text to list of words (punctuations removed)
 func TextToWords(text string) []string {
 	ret := make([]string, 0)
-	wordsWithPun := strings.FieldsFunc(text, checkIsSeparator)
+	wordsWithPun := strings.FieldsFunc(text, checkIsSpaceNL)
 	for _, wordWP := range wordsWithPun {
 		runes := []rune(wordWP)
 		firstAlphaNumeric := -1
-		lastAlphaNumeric := len(runes)
 		for i, r := range runes {
 			if AlphaNumeric[r] {
 				firstAlphaNumeric = i
 				break
 			}
 		}
+		if firstAlphaNumeric == -1 {
+			continue
+		}
+		lastAlphaNumeric := len(runes)
 		for i := len(runes) - 1; i >= 0; i-- {
 			if AlphaNumeric[runes[i]] {
 				lastAlphaNumeric = i
 				break
 			}
 		}
-		word := ""
-		if firstAlphaNumeric != -1 && lastAlphaNumeric != len(runes) {
-			word = string(runes[firstAlphaNumeric : lastAlphaNumeric+1])
+		if lastAlphaNumeric == len(runes) {
+			continue
 		}
-		if word != "" {
-			ret = append(ret, word)
-		}
+		ret = append(ret, string(runes[firstAlphaNumeric:lastAlphaNumeric+1]))
 	}
 	return ret
 }

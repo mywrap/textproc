@@ -22,6 +22,8 @@ he did not cheat, it was his brother on my account. Please unban him valve
 Sincerely the father
 
 Pls unban `,
+	`Có thánh này, chắc chắn "Sẻ đệ" (NDB 2.0) sẽ thêm sức mạnh để đả bại Sơ Luyến.
+Trực tiếp ngay bây giờ trên http://www.gametv1.vn. ______ Ahihi`,
 }
 
 func BenchmarkTextToWords(b *testing.B) {
