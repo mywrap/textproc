@@ -6,6 +6,8 @@ import (
 	"strings"
 	"testing"
 
+	"fmt"
+
 	"golang.org/x/net/html"
 )
 
@@ -92,8 +94,8 @@ func TestHtmlUtils(t *testing.T) {
 	}
 }
 
-func TestHTMLGetText(t *testing.T) {
-	file, err := ioutil.ReadFile("html_test_file.html")
+func TestHTMLGetTextF1(t *testing.T) {
+	file, err := ioutil.ReadFile("html_test_file1.html")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -127,5 +129,49 @@ Doanh nghiệp
 Giới thiệu
  Cách hoạt động của Tìm kiếm` {
 		t.Errorf("unexpected HTMLGetText: %v", text)
+	}
+}
+
+func TestHTMLGetTextF2(t *testing.T) {
+	file, err := ioutil.ReadFile("html_test_file2.html")
+	if err != nil {
+		t.Fatal(err)
+	}
+	htmlTree, err := html.Parse(bytes.NewReader(file))
+	if err != nil {
+		t.Fatalf("error html Parse: %v", err)
+	}
+	text := HTMLGetText(htmlTree)
+	if text != `Hàng hóa
+Năng lượng
+Thứ năm, 6/8/2020, 07:10 (GMT+7)
+Tồn kho tại Mỹ giảm, giá dầu lên đỉnh 5 tháng, vàng tiếp tục lập đỉnh lịch sử
+Chốt phiên 5/8, giá dầu Brent, WTI đều tăng.
+Giá vàng tiếp tục tăng, lập đỉnh lịch sử mới nhờ USD suy yếu và lợi nhuận từ trái phiếu chính phủ Mỹ giảm.
+Như Tâm (Theo Reuters)
+Thứ năm, 6/8/2020, 07:10 (GMT+7)
+Giá dầu Brent tương lai tăng 74 cent, tương đương 1,7%, lên 45,17 USD/thùng.
+Giá dầu WTI tương lai tăng 49 cent, tương đương 1,2%, lên 42,19 USD/thùng.
+Đầu phiên 5/8, giá của hai loại dầu đều có lúc tăng hơn 4%.
+Tồn kho dầu thô tại Mỹ trong tuần kết thúc ngày 31/7 giảm 7,4 triệu thùng, theo Cơ quan thông tin năng lượng Mỹ (EIA), vượt dự báo giảm 3 triệu thùng từ giới phân tích.
+USD suy yếu, khiến dầu rẻ hơn với những người nắm giữ đồng tiền khác, cũng hỗ trợ thị trường.
+“Thị trường hàng hóa hưởng lợi từ USD suy yếu và dầu chắc chắn cũng có phần”, theo Craig Erlam, nhà phân tích tại OANDA, New York.
+Thị trường năng lượng còn được thúc đẩy bởi các dấu hiệu cho thấy quá trình thương lượng giữa Nhà Trắng và phe Dân chủ tại quốc hội về gói hỗ trợ kinh tế tiếp theo đang có tiến triển, dù hai bên chưa có sự đồng thuận.
+Số liệu cho thấy hoạt động tại các nhà máy ở Mỹ trong tuần có cải thiện, được giới phân tích coi là dấu hiệu phục hồi kinh tế. Hoạt động kinh doanh tại eurozone cũng dần đi lên khi một số quy định hạn chế để ngăn Covid-19 lây lan được nới lỏng.
+Số ca nhiễm Covid-19 trên thế giới vẫn tăng, đe dọa đà phục hồi trong lực cầu năng lượng. Thế giới ghi nhận hơn 700.000 trường hợp tử vong vì đại dịch tính đến ngày 5/8 với Mỹ, Brazil, Ấn Độ và Mexico có số người chết cao nhất.
+“Nhu cầu xăng có thể giảm 7% trong quý III so với cùng kỳ năm trước, cho thấy đà phục hồi tiếp tục chững lại và khả năng quay trở về mức như năm 2019 ngay trong năm nay khó xảy ra”, JBC Energy nhận định. Nhu cầu nhiên liệu máy bay dự báo giảm 50% trong quý III so với cùng kỳ năm trước.
+Kim loại quý
+Giá vàng ngày 5/8 tiếp tục tăng, lập đỉnh lịch sử mới nhờ USD suy yếu và lợi nhuận từ trái phiếu chính phủ Mỹ giảm khiến nhà đầu tư chuyển hướng sang kim loại quý này. Giá vàng đã tăng 34% kể từ đầu năm nay.
+Giá vàng giao ngay tại sàn New York tăng 20,1 USD lên 2.039,5 USD/ounce, trong phiên có lúc chạm 2.055,1 USD/ounce.
+Giá vàng tương lai tăng 1,4% lên 2.049,3 USD/ounce, trong phiên có lúc chạm 2.070,3 USD/ounce.
+Giá vàng giao ngay tại sàn New York ngày 5/8.
+Giá bạc tăng 4,3% lên 27,13 USD/ounce, cao nhất kể từ tháng 4/2013, và đã tăng 50% kể từ đầu năm.
+Giá platinum tăng 2,7% lên 962,63 USD/ounce.
+giá dầu thế giới
+giá vàng thế giới
+Brent
+WTI` {
+		t.Errorf("unexpected HTMLGetText:")
+		fmt.Println(text)
 	}
 }

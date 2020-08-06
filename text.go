@@ -59,6 +59,9 @@ func RemoveRedundantSpace(text string) string {
 				}
 			}
 			if !isSpaceLine {
+				if space == '\n' {
+					token = strings.TrimSpace(token)
+				}
 				realTokens = append(realTokens, token)
 			}
 		}
@@ -130,7 +133,7 @@ func TextToWords(text string) []string {
 // WordsToNGrams creates a set of n-gram from input words,
 // (A n-gram is a contiguous sequence of n words)
 func WordsToNGrams(words []string, n int) map[string]int {
-	result := make(map[string]int)
+	result := make(map[string]int, len(words))
 	for i := 0; i < len(words)-n+1; i++ {
 		nGram := strings.Join(words[i:i+n], " ")
 		result[nGram] += 1

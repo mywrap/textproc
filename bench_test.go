@@ -24,10 +24,10 @@ Sincerely the father
 Pls unban `,
 }
 
-func BenchmarkTextToSyls(b *testing.B) {
+func BenchmarkTextToWords(b *testing.B) {
 	for n := 0; n < b.N; n++ {
 		for _, para := range paragraphs {
-			_ = TextToWords(para)
+			TextToWords(para)
 		}
 	}
 }
@@ -35,18 +35,39 @@ func BenchmarkTextToSyls(b *testing.B) {
 func BenchmarkTextToNGrams(b *testing.B) {
 	for n := 0; n < b.N; n++ {
 		for _, para := range paragraphs {
-			nGrams := TextToNGrams(para, 2)
-			_ = nGrams
+			TextToNGrams(para, 2)
 		}
 	}
-}
-
-func BenchmarkRemoveRedundantSpace(b *testing.B) {
-	// TODO
 }
 
 func BenchmarkGenRandomWord(b *testing.B) {
 	for n := 0; n < b.N; n++ {
 		GenRandomWord(8, 12)
+	}
+}
+
+func BenchmarkRemoveRedundantSpace(b *testing.B) {
+	redundantText := `
+Google
+Gmail
+Hình ảnh
+Đăng nhập		
+	
+Xóa
+
+
+Báo cáo các gợi ý không phù hợp
+Google có các thứ tiếng:  
+English
+    
+Français
+    
+中文（繁體）
+  
+Việt Nam
+Giới thiệu
+  Cách hoạt động của Tìm kiếm  `
+	for n := 0; n < b.N; n++ {
+		RemoveRedundantSpace(redundantText)
 	}
 }
