@@ -1,12 +1,19 @@
 # Text processing
 
-Extract information from text (Vietnamese) and HTML.  
-Wrapped [antchfx/htmlquery](https://github.com/antchfx/htmlquery).
+Extract information from text and HTML.  
+Created because of [daominah/scraper](
+https://github.com/daominah/scraper), a scraper that can filter nearly
+duplicate news and extract keywords.
 
-## Usage
+## Functions
 
-````go
+* **NormalizeText** normalize different representations of a character.
+* **TextToNGrams** creates a set of n-gram (lowercase) from input text.
 
-````
-Detail isn [text_test.go](./text_test.go) and 
+* **HTMLXPath** finds all html nodes match the xpath query.
+* **HTMLGetHREFs** returns all URLs (absolute form) in a HTML.
+* **HTMLGetText** get content from a HTML (javascript, spaces removed)
+
+## Example
+Detail in [text_test.go](./text_test.go) and 
 [html_test.go](./html_test.go).

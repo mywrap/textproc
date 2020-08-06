@@ -142,7 +142,7 @@ func WordsToNGrams(words []string, n int) map[string]int {
 	return result
 }
 
-// TextToNGrams creates a set of n-gram from lowered input text
+// TextToNGrams creates a set of n-gram (lowercase) from input text
 func TextToNGrams(text string, n int) map[string]int {
 	text = strings.ToLower(text)
 	words := TextToWords(text)
@@ -150,8 +150,8 @@ func TextToNGrams(text string, n int) map[string]int {
 }
 
 // There are often several ways to represent the same string. For example,
-// an "é" (e-acute) can be represented in a string as a single rune ("\u00e9") or
-// an "e" followed by an acute accent ("e\u0301").
+// an "é" can be represented in a string as a single rune ("\u00e9")
+// or an "e" followed by an acute accent ("e\u0301").
 // They should be treated as equal in text processing.
 // Vietnamese text has an extra problem: diacritic position,
 // example: old style: òa, óa, ỏa, õa, ọa; new style: oà, oá, oả, oã, oạ
