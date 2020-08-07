@@ -4,40 +4,32 @@ import (
 	"hash/fnv"
 	"math/rand"
 	"strings"
-	"unicode"
-
 	"time"
 
 	"golang.org/x/text/unicode/norm"
 )
 
-// runes group by types, used for checking character type
+// runes group by types, used for checking character type (Vietnamese alphabet)
 var (
-	Numeric       = make(map[rune]bool)
-	LowerAlpha    = make(map[rune]bool)
-	UpperAlpha    = make(map[rune]bool)
-	AlphaNumeric  = make(map[rune]bool)
-	AlphaNumericL = make([]rune, 0) // a list for choosing random a key in map
+	numerics    = "0123456789"
+	lowerAlphas = "aàáãạảăắằẳẵặâấầẩẫậbcdđeèéẹẻẽêếềểễệfghiìíĩỉị" +
+		"jklmnoòóõọỏôốồổỗộơớờởỡợpqrstuùúũụủưứừửữựvwxyýỳỵỷỹz"
+	upperAlphas = strings.ToUpper(lowerAlphas)
+
+	AlphaNumeric     = toMapRunes(numerics + lowerAlphas + upperAlphas)
+	AlphaNumericList = []rune(numerics + lowerAlphas + upperAlphas)
+	AlphabetEn       = []rune(
+		"0123456789_____abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 )
 
-// just init above "constants"
-func init() {
-	numerics := "0123456789"
-	lowerAlphas := "aàáãạảăắằẳẵặâấầẩẫậbcdđeèéẹẻẽêếềểễệfghiìíĩỉịjklmn" +
-		"oòóõọỏôốồổỗộơớờởỡợpqrstuùúũụủưứừửữựvwxyýỳỵỷỹz"
-	for _, char := range []rune(numerics) {
-		Numeric[char] = true
-		AlphaNumeric[char] = true
-		AlphaNumericL = append(AlphaNumericL, char)
+func init() { rand.Seed(time.Now().UnixNano()) }
+
+func toMapRunes(s string) map[rune]bool {
+	ret := make(map[rune]bool, len(s))
+	for _, char := range []rune(s) {
+		ret[char] = true
 	}
-	for _, char := range []rune(lowerAlphas) {
-		upper := unicode.ToUpper(char)
-		LowerAlpha[char], UpperAlpha[upper] = true, true
-		AlphaNumeric[char], AlphaNumeric[upper] = true, true
-		AlphaNumericL = append(AlphaNumericL, char)
-		AlphaNumericL = append(AlphaNumericL, upper)
-	}
-	rand.Seed(time.Now().UnixNano())
+	return ret
 }
 
 // RemoveRedundantSpace replaces continuous spaces with one space
@@ -86,8 +78,7 @@ func HashTextToInt(word string) int64 {
 	return int64(h.Sum64())
 }
 
-// GenRandomWord uses Vietnamese characters
-func GenRandomWord(minLen int, maxLen int) string {
+func genRandomWord(minLen int, maxLen int, charList []rune) string {
 	if minLen <= 0 {
 		minLen = 0
 	}
@@ -98,9 +89,19 @@ func GenRandomWord(minLen int, maxLen int) string {
 	builder := strings.Builder{}
 	builder.Grow(3 * wordLen) // UTF8
 	for i := 0; i < wordLen; i++ {
-		builder.WriteRune(AlphaNumericL[rand.Intn(len(AlphaNumericL))])
+		builder.WriteRune(charList[rand.Intn(len(charList))])
 	}
 	return builder.String()
+}
+
+// GenRandomWord char set: 0-9, _, a-z, A-Z
+func GenRandomWord(minLen int, maxLen int) string {
+	return genRandomWord(minLen, maxLen, AlphabetEn)
+}
+
+// GenRandomWord char set: 0-9, Vietnamese's letters
+func GenRandomWordVN(minLen int, maxLen int) string {
+	return genRandomWord(minLen, maxLen, AlphaNumericList)
 }
 
 // TextToWords splits a text to list of words (punctuations removed)

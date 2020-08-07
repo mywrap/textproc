@@ -12,7 +12,7 @@ func TestTextInit(t *testing.T) {
 	//t.Logf("LowerAlpha: %v", LowerAlpha)
 	//t.Logf("UpperAlpha: %v", UpperAlpha)
 	//t.Logf("AlphaNumeric: %v", AlphaNumeric)
-	//t.Logf("AlphaNumericL: %v", AlphaNumericL)
+	//t.Logf("AlphaNumericList: %v", AlphaNumericList)
 }
 
 func TestTextToNGrams(t *testing.T) {
@@ -109,12 +109,17 @@ Cách hoạt động của Tìm kiếm`
 }
 
 func TestGenRandomWord(t *testing.T) {
-	for i := 0; i < 10; i++ {
-		word := GenRandomWord(8, 12)
-		//t.Logf("len: %2d, lenBytes: %2d, word: %v",
-		//	len([]rune(word)), len([]byte(word)), word)
-		if !(8 <= len([]rune(word)) && len([]rune(word)) <= 12) {
-			t.Error("wrong GenRandomWord len")
+	for _, genFunc := range []func(int, int) string{
+		GenRandomWord,
+		GenRandomWordVN,
+	} {
+		for i := 0; i < 5; i++ {
+			word := genFunc(8, 12)
+			//t.Logf("len: %2d, lenBytes: %2d, word: %v",
+			//	len([]rune(word)), len([]byte(word)), word)
+			if !(8 <= len([]rune(word)) && len([]rune(word)) <= 12) {
+				t.Error("wrong GenRandomWord len")
+			}
 		}
 	}
 }
