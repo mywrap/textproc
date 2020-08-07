@@ -6,6 +6,8 @@ import (
 	"strings"
 	"unicode"
 
+	"time"
+
 	"golang.org/x/text/unicode/norm"
 )
 
@@ -35,6 +37,7 @@ func init() {
 		AlphaNumericL = append(AlphaNumericL, char)
 		AlphaNumericL = append(AlphaNumericL, upper)
 	}
+	rand.Seed(time.Now().UnixNano())
 }
 
 // RemoveRedundantSpace replaces continuous spaces with one space
