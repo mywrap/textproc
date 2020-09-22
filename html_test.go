@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"strings"
 	"testing"
 
@@ -173,5 +174,35 @@ Brent
 WTI` {
 		t.Errorf("unexpected HTMLGetText:")
 		fmt.Println(text)
+	}
+}
+
+func TestHTMLParseToNode(t *testing.T) {
+	resp, err := http.Get("https://google.com/should-be-not-found")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp.Body.Close()
+	node := HTMLParseToNode(resp.Body) // ignore readAll body error
+	if node == nil {
+		t.Fatal("unexpected nil return")
+	}
+}
+
+func TestHTMLParseToNode2(t *testing.T) {
+	resp, err := http.Get("https://github.com/should-be-not-found")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	textInBody := HTMLGetText(HTMLParseToNode(body))
+	t.Logf("len respBody: %v, len textInBody: %v", len(body), len(textInBody))
+	t.Logf("textInBody: %v", textInBody)
+	if len(textInBody) < 1 || len(textInBody) > 4095 {
+		t.Errorf("too long textInBody: %v", len(textInBody))
 	}
 }

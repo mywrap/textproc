@@ -7,6 +7,8 @@ import (
 	"sort"
 	"strings"
 
+	"io"
+
 	"github.com/antchfx/htmlquery"
 	"github.com/antchfx/xpath"
 	"golang.org/x/net/html"
@@ -107,4 +109,29 @@ func HTMLGetImgSrc(baseUrlStr string, imgNode *html.Node) string {
 		return "" // src can be "data:image/jpeg;base64,ddd"
 	}
 	return imgSrc.String()
+}
+
+// HTMLParseToNode parses a HTML content (string, []byte or io_Reader) into a
+// html_Node (returns an empty node on error).
+// Should only be used for convenient testing.
+func HTMLParseToNode(htmlContent interface{}) *html.Node {
+	emptyNode, err := html.Parse(strings.NewReader(
+		`<!DOCTYPE html><html><body></body></html>`))
+	if err != nil { // unreachable
+		emptyNode = &html.Node{}
+	}
+	var reader io.Reader
+	switch v := htmlContent.(type) {
+	case string:
+		reader = strings.NewReader(v)
+	case []byte:
+		reader = bytes.NewReader(v)
+	case io.Reader:
+		reader = v
+	}
+	node, err := html.Parse(reader)
+	if err != nil {
+		return emptyNode
+	}
+	return node
 }
