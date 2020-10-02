@@ -135,3 +135,12 @@ func HTMLParseToNode(htmlContent interface{}) *html.Node {
 	}
 	return node
 }
+
+// CheckValidXPath returns nil if the input xPath is valid
+func CheckValidXPath(xPath string) error {
+	_, err := xpath.Compile(xPath)
+	if err != nil {
+		return err
+	}
+	return nil
+}
