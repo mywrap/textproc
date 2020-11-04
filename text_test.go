@@ -42,7 +42,7 @@ func TestHashTextToInt64(t *testing.T) {
 	words := make(map[string]bool)
 	hashes := make(map[int64]bool)
 	for i := 0; i < nWords; i++ {
-		word := GenRandomWord(1, 4)
+		word := GenRandomWord(1, 4, AlphaNumericList)
 		words[word] = true
 		hashes[HashTextToInt(word)] = true
 		hashes[HashTextToInt(word)] = true
@@ -109,17 +109,18 @@ Cách hoạt động của Tìm kiếm`
 }
 
 func TestGenRandomWord(t *testing.T) {
-	for _, genFunc := range []func(int, int) string{
-		GenRandomWord,
-		GenRandomWordVN,
-	} {
-		for i := 0; i < 5; i++ {
-			word := genFunc(8, 12)
-			//t.Logf("len: %2d, lenBytes: %2d, word: %v",
-			//	len([]rune(word)), len([]byte(word)), word)
-			if !(8 <= len([]rune(word)) && len([]rune(word)) <= 12) {
-				t.Error("wrong GenRandomWord len")
-			}
+	for i := 0; i < 5; i++ {
+		word := GenRandomWord(8, 12, AlphaNumericEnList)
+		//t.Logf("len: %2d, lenBytes: %2d, word: %v", len([]rune(word)), len([]byte(word)), word)
+		if !(8 <= len([]rune(word)) && len([]rune(word)) <= 12) {
+			t.Error("wrong GenRandomWord len")
 		}
+	}
+}
+
+func TestGenRandomVarName(t *testing.T) {
+	for i := 0; i < 5; i++ {
+		word := GenRandomVarName(8)
+		t.Logf("len: %2d, lenBytes: %2d, word: %v", len([]rune(word)), len([]byte(word)), word)
 	}
 }

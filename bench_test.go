@@ -44,7 +44,7 @@ func BenchmarkTextToNGrams(b *testing.B) {
 
 func BenchmarkGenRandomWord(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		GenRandomWord(8, 12)
+		GenRandomWord(8, 12, AlphaNumericList)
 	}
 }
 

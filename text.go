@@ -16,10 +16,12 @@ var (
 		"jklmnoòóõọỏôốồổỗộơớờởỡợpqrstuùúũụủưứừửữựvwxyýỳỵỷỹz"
 	upperAlphas = strings.ToUpper(lowerAlphas)
 
-	AlphaNumeric     = toMapRunes(numerics + lowerAlphas + upperAlphas)
-	AlphaNumericList = []rune(numerics + lowerAlphas + upperAlphas)
-	AlphabetEn       = []rune(
-		"0123456789_____abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+	AlphaNumeric = toMapRunes(numerics + lowerAlphas + upperAlphas)
+
+	AlphaNumericList   = []rune(numerics + lowerAlphas + upperAlphas)
+	AlphaNumericEnList = []rune(
+		"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+	AlphaEnList = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 )
 
 func init() { rand.Seed(time.Now().UnixNano()) }
@@ -78,7 +80,7 @@ func HashTextToInt(word string) int64 {
 	return int64(h.Sum64())
 }
 
-func genRandomWord(minLen int, maxLen int, charList []rune) string {
+func GenRandomWord(minLen int, maxLen int, charList []rune) string {
 	if minLen <= 0 {
 		minLen = 0
 	}
@@ -94,14 +96,18 @@ func genRandomWord(minLen int, maxLen int, charList []rune) string {
 	return builder.String()
 }
 
-// GenRandomWord char set: 0-9, _, a-z, A-Z
-func GenRandomWord(minLen int, maxLen int) string {
-	return genRandomWord(minLen, maxLen, AlphabetEn)
-}
-
-// GenRandomWord char set: 0-9, Vietnamese's letters
-func GenRandomWordVN(minLen int, maxLen int) string {
-	return genRandomWord(minLen, maxLen, AlphaNumericList)
+// GenRandomVarName returns an alpha numeric string, first char is a letter
+func GenRandomVarName(wordLen int) string {
+	if wordLen <= 0 {
+		return ""
+	}
+	builder := strings.Builder{}
+	builder.Grow(wordLen)
+	builder.WriteRune(AlphaEnList[rand.Intn(len(AlphaEnList))])
+	for i := 1; i < wordLen; i++ {
+		builder.WriteRune(AlphaNumericEnList[rand.Intn(len(AlphaNumericEnList))])
+	}
+	return builder.String()
 }
 
 // TextToWords splits a text to list of words (punctuations removed)
