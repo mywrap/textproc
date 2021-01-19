@@ -124,3 +124,18 @@ func TestGenRandomVarName(t *testing.T) {
 		t.Logf("len: %2d, lenBytes: %2d, word: %v", len([]rune(word)), len([]byte(word)), word)
 	}
 }
+
+func TestRemoveVietnamDiacritic(t *testing.T) {
+	for _, test := range []struct {
+		in  string
+		out string
+	}{
+		{in: "Đào", out: "Dao"},
+		{in: "NGUYỄN NGỌC THUẬN", out: "NGUYEN NGOC THUAN"},
+	} {
+		r, e := RemoveVietnamDiacritic(test.in), test.out
+		if r != e {
+			t.Errorf("error RemoveVietnamDiacritic: real: %v, expected: %v", r, e)
+		}
+	}
+}

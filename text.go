@@ -171,3 +171,48 @@ func NormalizeText(text string) string {
 	// TODO: Vietnamese diacritic position
 	return result
 }
+
+func removeVietnamDiacritic(char rune) rune {
+	switch char {
+	case 'à', 'á', 'ã', 'ạ', 'ả', 'ă', 'ắ', 'ằ', 'ẳ', 'ẵ', 'ặ', 'â', 'ấ', 'ầ', 'ẩ', 'ẫ', 'ậ':
+		return 'a'
+	case 'đ':
+		return 'd'
+	case 'è', 'é', 'ẹ', 'ẻ', 'ẽ', 'ê', 'ế', 'ề', 'ể', 'ễ', 'ệ':
+		return 'e'
+	case 'ì', 'í', 'ĩ', 'ỉ', 'ị':
+		return 'i'
+	case 'ò', 'ó', 'õ', 'ọ', 'ỏ', 'ô', 'ố', 'ồ', 'ổ', 'ỗ', 'ộ', 'ơ', 'ớ', 'ờ', 'ở', 'ỡ', 'ợ':
+		return 'o'
+	case 'ù', 'ú', 'ũ', 'ụ', 'ủ', 'ư', 'ứ', 'ừ', 'ử', 'ữ', 'ự':
+		return 'u'
+	case 'ý', 'ỳ', 'ỵ', 'ỷ', 'ỹ':
+		return 'y'
+	case 'À', 'Á', 'Ã', 'Ạ', 'Ả', 'Ă', 'Ắ', 'Ằ', 'Ẳ', 'Ẵ', 'Ặ', 'Â', 'Ấ', 'Ầ', 'Ẩ', 'Ẫ', 'Ậ':
+		return 'A'
+	case 'Đ':
+		return 'D'
+	case 'È', 'É', 'Ẹ', 'Ẻ', 'Ẽ', 'Ê', 'Ế', 'Ề', 'Ể', 'Ễ', 'Ệ':
+		return 'E'
+	case 'Ì', 'Í', 'Ĩ', 'Ỉ', 'Ị':
+		return 'I'
+	case 'Ò', 'Ó', 'Õ', 'Ọ', 'Ỏ', 'Ô', 'Ố', 'Ồ', 'Ổ', 'Ỗ', 'Ộ', 'Ơ', 'Ớ', 'Ờ', 'Ở', 'Ỡ', 'Ợ':
+		return 'O'
+	case 'Ù', 'Ú', 'Ũ', 'Ụ', 'Ủ', 'Ư', 'Ứ', 'Ừ', 'Ử', 'Ữ', 'Ự':
+		return 'U'
+	case 'Ý', 'Ỳ', 'Ỵ', 'Ỷ', 'Ỹ':
+		return 'Y'
+	default:
+		return char
+	}
+}
+
+// example: Đào => Dao
+func RemoveVietnamDiacritic(text string) string {
+	text = NormalizeText(text)
+	chars := make([]rune, 0)
+	for _, r := range []rune(text) {
+		chars = append(chars, removeVietnamDiacritic(r))
+	}
+	return string(chars)
+}
