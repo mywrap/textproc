@@ -126,12 +126,22 @@ func TestGenRandomVarName(t *testing.T) {
 }
 
 func TestRemoveVietnamDiacritic(t *testing.T) {
+	//d1 := "Đ"
+	//d2 := "Ð"
+	//t.Logf("%v %v %v %v %v",
+	//	len([]rune(d1)), d1, len([]rune(d2)), d2, d1 == d2)
+
+	//t.Logf("removeVietnamDiacritic %c", removeVietnamDiacritic('đ'))
+
 	for _, test := range []struct {
 		in  string
 		out string
 	}{
 		{in: "Đào", out: "Dao"},
 		{in: "NGUYỄN NGỌC THUẬN", out: "NGUYEN NGOC THUAN"},
+		{in: "Hải Ðường", out: "Hai Duong"},
+		{in: "office", out: "office"},
+		{in: "đ", out: "d"},
 	} {
 		r, e := RemoveVietnamDiacritic(test.in), test.out
 		if r != e {

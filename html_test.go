@@ -104,7 +104,7 @@ func TestHTMLGetTextF1(t *testing.T) {
 		t.Fatalf("error html Parse: %v", err)
 	}
 	text := HTMLGetText(htmlTree)
-	if text != `Google
+	if expected := `Google
 Gmail
 Hình ảnh
 Đăng nhập
@@ -127,9 +127,14 @@ Gửi phản hồi
 Quảng cáo
 Doanh nghiệp
 Giới thiệu
-Cách hoạt động của Tìm kiếm` {
+Cách hoạt động của Tìm kiếm`; text != expected {
 		t.Error("unexpected HTMLGetText file1:")
 		fmt.Println(text)
+		//aLines := strings.Split(text, "\n")
+		//eLines := strings.Split(text, "\n")
+		//for i, _ := range aLines {
+		//	t.Log(aLines[i] == eLines[i])
+		//}
 	}
 }
 

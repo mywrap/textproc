@@ -5,7 +5,10 @@ import (
 	"math/rand"
 	"strings"
 	"time"
+	"unicode"
 
+	"golang.org/x/text/runes"
+	"golang.org/x/text/transform"
 	"golang.org/x/text/unicode/norm"
 )
 
@@ -166,10 +169,10 @@ func TextToNGrams(text string, n int) map[string]int {
 // Vietnamese text has an extra problem: diacritic position,
 // example: old style: òa, óa, ỏa, õa, ọa; new style: oà, oá, oả, oã, oạ
 func NormalizeText(text string) string {
-	bs := norm.NFKC.Bytes([]byte(text))
-	result := string(bs)
+	transformer := transform.Chain(norm.NFKD, norm.NFKC)
+	ret, _, _ := transform.String(transformer, text)
 	// TODO: Vietnamese diacritic position
-	return result
+	return ret
 }
 
 func removeVietnamDiacritic(char rune) rune {
@@ -190,7 +193,7 @@ func removeVietnamDiacritic(char rune) rune {
 		return 'y'
 	case 'À', 'Á', 'Ã', 'Ạ', 'Ả', 'Ă', 'Ắ', 'Ằ', 'Ẳ', 'Ẵ', 'Ặ', 'Â', 'Ấ', 'Ầ', 'Ẩ', 'Ẫ', 'Ậ':
 		return 'A'
-	case 'Đ':
+	case 'Đ', 'Ð':
 		return 'D'
 	case 'È', 'É', 'Ẹ', 'Ẻ', 'Ẽ', 'Ê', 'Ế', 'Ề', 'Ể', 'Ễ', 'Ệ':
 		return 'E'
@@ -209,7 +212,9 @@ func removeVietnamDiacritic(char rune) rune {
 
 // example: Đào => Dao
 func RemoveVietnamDiacritic(text string) string {
-	text = NormalizeText(text)
+	transformer := transform.Chain(
+		norm.NFKD, runes.Remove(runes.In(unicode.Mn)), norm.NFKC)
+	text, _, _ = transform.String(transformer, text)
 	chars := make([]rune, 0)
 	for _, r := range []rune(text) {
 		chars = append(chars, removeVietnamDiacritic(r))
