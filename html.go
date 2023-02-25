@@ -3,11 +3,10 @@ package textproc
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"net/url"
 	"sort"
 	"strings"
-
-	"io"
 
 	"github.com/antchfx/htmlquery"
 	"github.com/antchfx/xpath"
