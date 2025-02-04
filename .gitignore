@@ -1,9 +1,34 @@
-# ides
+# IDE and OS files
 .idea
 .vscode
+.DS_Store
 
+# the following are inspired by https://github.com/github/gitignore/blob/main/Go.gitignore
 
-# go testing, pprof output
-*.out
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+cmd/main_example/example
+
+# Test binary and Go tools: coverage, pprof, ...
 *.test
+*.out
+
 profile*.pdf
+
+# Dependency directories (remove the comment below to include it)
+# vendor/
+
+# Go workspace file
+go.work
+go.work.sum
+
+# env file may contain real username, password...
+.env
+
+config/*ignore*.sh
+config/.env*

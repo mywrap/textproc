@@ -2,6 +2,7 @@ package textproc
 
 import (
 	"bytes"
+	"encoding/xml"
 	"fmt"
 	"io"
 	"net/url"
@@ -133,6 +134,46 @@ func HTMLParseToNode(htmlContent interface{}) *html.Node {
 		return emptyNode
 	}
 	return node
+}
+
+// HTMLRender is a convenient func to render a html node to string
+func HTMLRender(node *html.Node) string {
+	buf := &bytes.Buffer{}
+	err := html.Render(buf, node)
+	if err != nil {
+		return fmt.Sprintf("error html.Render: %v", err)
+	}
+	return buf.String()
+}
+
+// HTMLRenderIndent renders an HTML node to a string with applying indent to format the output.
+// Each element in the output will begin on a new line beginning with "prefix"
+// followed by one or more copies of "indent" according to the indentation nesting.
+func HTMLRenderIndent(node *html.Node, prefix string, indent string) string {
+	buf := &bytes.Buffer{}
+	err := html.Render(buf, node)
+	if err != nil {
+		return fmt.Sprintf("error html.Render: %v", err)
+	}
+	decoder := xml.NewDecoder(buf)
+
+	ret := &bytes.Buffer{}
+	encoder := xml.NewEncoder(ret)
+	encoder.Indent(prefix, indent)
+	for {
+		token, err := decoder.Token()
+		if err == io.EOF {
+			encoder.Flush()
+			return ret.String()
+		}
+		if err != nil {
+			return fmt.Sprintf("error decoder.Token: %v", err)
+		}
+		err = encoder.EncodeToken(token)
+		if err != nil {
+			return fmt.Sprintf("error encoder.EncodeToken: %v", err)
+		}
+	}
 }
 
 // CheckValidXPath returns nil if the input xPath is valid

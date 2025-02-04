@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strings"
 	"testing"
 
@@ -209,5 +210,40 @@ func TestHTMLParseToNode2(t *testing.T) {
 	t.Logf("textInBody: %v", textInBody)
 	if len(textInBody) < 1 || len(textInBody) > 4095 {
 		t.Errorf("too long textInBody: %v", len(textInBody))
+	}
+}
+
+func TestHTMLRender(t *testing.T) {
+	file, err := os.ReadFile("html_test_simple.html")
+	if err != nil {
+		t.Fatal(err)
+	}
+	htmlTree, err := html.Parse(bytes.NewReader(file))
+	if err != nil {
+		t.Fatalf("error html Parse: %v", err)
+	}
+
+	renderedHTML := HTMLRender(htmlTree)
+	if renderedHTML == "" {
+		t.Error("HTMLRender returned an empty string")
+	}
+	if !strings.Contains(renderedHTML, "\t<title>Simple HTML Document</title>") {
+		t.Errorf("error HTMLRender: expected title (indented by tab) not found")
+	}
+
+	renderedIndent := HTMLRenderIndent(htmlTree, "", "    ")
+	if !strings.Contains(renderedHTML, "\t<title>Simple HTML Document</title>") {
+		t.Errorf("error HTMLRender: expected title (indented by tab) not found")
+	}
+	if !strings.Contains(renderedIndent, "    <title>Simple HTML Document</title>") {
+		t.Errorf("error HTMLRenderIndent: expected title (indented by 4 spaces) not found")
+	}
+
+	extractedText := HTMLGetText(htmlTree)
+	lines := strings.Split(extractedText, "\n")
+	lastLine := lines[len(lines)-1]
+	want := "© 2025 My Website"
+	if !strings.Contains(lastLine, want) {
+		t.Errorf("error HTMLGetText: copyright text is not extracted correctly: got %v, want %v", lastLine, want)
 	}
 }
