@@ -8,11 +8,11 @@ import (
 )
 
 func TestTextInit(t *testing.T) {
-	//t.Logf("Numeric: %#v", Numeric)
-	//t.Logf("LowerAlpha: %v", LowerAlpha)
-	//t.Logf("UpperAlpha: %v", UpperAlpha)
-	//t.Logf("AlphaNumeric: %v", AlphaNumeric)
-	//t.Logf("AlphaNumericList: %v", AlphaNumericList)
+	// t.Logf("Numeric: %#v", Numeric)
+	// t.Logf("LowerAlpha: %v", LowerAlpha)
+	// t.Logf("UpperAlpha: %v", UpperAlpha)
+	// t.Logf("AlphaNumeric: %v", AlphaNumeric)
+	// t.Logf("AlphaNumericList: %v", AlphaNumericList)
 }
 
 func TestTextToNGrams(t *testing.T) {
@@ -111,7 +111,7 @@ Cách hoạt động của Tìm kiếm`
 func TestGenRandomWord(t *testing.T) {
 	for i := 0; i < 5; i++ {
 		word := GenRandomWord(8, 12, AlphaNumericEnList)
-		//t.Logf("len: %2d, lenBytes: %2d, word: %v", len([]rune(word)), len([]byte(word)), word)
+		// t.Logf("len: %2d, lenBytes: %2d, word: %v", len([]rune(word)), len([]byte(word)), word)
 		if !(8 <= len([]rune(word)) && len([]rune(word)) <= 12) {
 			t.Error("wrong GenRandomWord len")
 		}
@@ -126,12 +126,12 @@ func TestGenRandomVarName(t *testing.T) {
 }
 
 func TestRemoveVietnamDiacritic(t *testing.T) {
-	//d1 := "Đ"
-	//d2 := "Ð"
-	//t.Logf("%v %v %v %v %v",
+	// d1 := "Đ"
+	// d2 := "Ð"
+	// t.Logf("%v %v %v %v %v",
 	//	len([]rune(d1)), d1, len([]rune(d2)), d2, d1 == d2)
 
-	//t.Logf("removeVietnamDiacritic %c", removeVietnamDiacritic('đ'))
+	// t.Logf("removeVietnamDiacritic %c", removeVietnamDiacritic('đ'))
 
 	for _, test := range []struct {
 		in  string

@@ -79,7 +79,7 @@ func HTMLGetHREFs(baseUrlStr string, node *html.Node) []string {
 	}
 
 	result := make([]string, 0)
-	for k, _ := range setUrls {
+	for k := range setUrls {
 		result = append(result, k)
 	}
 	sort.Strings(result)
